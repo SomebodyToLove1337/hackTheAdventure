@@ -22,9 +22,11 @@ namespace hackTheAdventure
         //Print out Game Tiltle and overview
         public static void StartGame()
         {
-            Console.WriteLine("The Lost City of Zorath!\n");
+            //Console.WriteLine("The Lost City of Zorath!\n");
             Console.WriteLine("Welcome to The Enchanted Forest! You are about to embark on a magical journey through a mystical realm filled with wonder and danger. You will encounter many strange creatures and obstacles along the way, but with your wits and courage, you will overcome them all and emerge victorious.\r\n\r\nAs you explore the enchanted woods and winding rivers of this mysterious land, you will uncover ancient artifacts and long-forgotten secrets that will lead you ever closer to your goal. But beware: there are those who will stop at nothing to keep the secrets of the forest hidden from the world.\r\n\r\nAre you ready to take on the challenge? The fate of the realm rests in your hands. Good luck, adventurer!\r\n");
+            Console.WriteLine("        ,     \\    /      ,        \r\n       / \\    )\\__/(     / \\       \r\n      /   \\  (_\\  /_)   /   \\      \r\n ____/_____\\__\\@  @/___/_____\\____ \r\n|             |\\../|              |\r\n|              \\VV/               |\r\n|     The Lost City of Zorath!    |\r\n|_________________________________|\r\n |    /\\ /      \\\\       \\ /\\    | \r\n |  /   V        ))       V   \\  | \r\n |/     `       //        '     \\| \r\n `              V                '");
             CreateCharacter();
+            Choice();
 
         }
 
@@ -87,9 +89,45 @@ namespace hackTheAdventure
             Console.ReadKey();
             Console.ResetColor();
         }
-
+        static void Choice()
+        {
+            char charInput;
+            Console.WriteLine("What would you like to do" + characterName + " ?");
+            Console.WriteLine("1. Go North");
+            Console.WriteLine("2. Go East");
+            Console.Write("> ");
+            charInput = Console.ReadKey().KeyChar;
+            while (charInput != '1' && charInput != '2')
+            {
+                
+                Console.WriteLine("What would you like to do" + characterName + " ?");
+                Console.WriteLine("1. Go North");
+                Console.WriteLine("2. Go East");
+                Console.Write("> ");
+                
+                Console.WriteLine(" was an Invalid Choice please choose 1 or 2");
+                Console.Write("> ");
+                
+                charInput = Console.ReadKey().KeyChar;
+                Console.Clear();
+            }
+            if (charInput == '1')
+            {
+                Console.WriteLine("You go North");
+            }
+            else if (charInput == '2')
+            {
+                Console.WriteLine("You go East");
+            }
+            else
+            {
+                Console.WriteLine("Invalid Choice");
+            }
+        }
 
     }
+
+
 
     class Item
     {
@@ -101,8 +139,8 @@ namespace hackTheAdventure
         {
             Game.StartGame();
             Console.ReadKey();
-            Game.Dialog("Have you seen a strange creature around here?\nAbout three feet high, greenish, with fluffy hair?\n");
-            Game.Dialog("No, I haven't seen anything like that.", "red");
+            //Game.Dialog("Have you seen a strange creature around here?\nAbout three feet high, greenish, with fluffy hair?\n");
+            //Game.Dialog("No, I haven't seen anything like that.", "red");
 
         }
 
