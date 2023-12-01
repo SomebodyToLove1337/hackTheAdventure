@@ -9,8 +9,17 @@
 
 using System;
 using System.Security.Cryptography.X509Certificates;
+using Azure;
+using Azure.AI.OpenAI;
+using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json.Linq;
+using System.IO;
 
 
+
+
+
+//Console.WriteLine($"Hello, {config["endpoint"]}");
 
 namespace hackTheAdventure
 {
@@ -137,6 +146,14 @@ namespace hackTheAdventure
     {
         static void Main()
         {
+            /*            var json = File.ReadAllText("secrets.json");
+                        var secrets = JObject.Parse(json);
+                        var secretKey = secrets["endpoint"].ToString();
+                        Console.WriteLine(secretKey);
+                        Console.ReadKey();*/
+
+            readAuzureOpenAICred();
+
             Game.StartGame();
             Console.ReadKey();
             //Game.Dialog("Have you seen a strange creature around here?\nAbout three feet high, greenish, with fluffy hair?\n");
@@ -144,6 +161,13 @@ namespace hackTheAdventure
 
         }
 
+        private static void readAuzureOpenAICred()
+        {
+            var config = new ConfigurationBuilder()
+    .AddUserSecrets<Program>()
+    .Build();
+            Console.WriteLine($"Hello, {config["settings:endpoint"]}");
+        }
     }
 
 
