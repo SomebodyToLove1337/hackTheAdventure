@@ -133,6 +133,8 @@ namespace hackTheAdventure
             {
                 Console.WriteLine(message);
             }
+           
+            //Console.ReadKey();
             Console.ResetColor();
         }
         static void Choice()
@@ -338,9 +340,7 @@ Hello, i am
 
             ChatCompletions response = await openAIClient.GetChatCompletionsAsync(completionOptions);
 
-            ChatMessage assistantResponse = response.Choices[0].Message;
-            Game.Dialog($"Dungeon Master >>> {assistantResponse.Content}", "cyan");
-            //Console.WriteLine($"Dungeon Master >>> {assistantResponse.Content}");
+            completionOptions.Messages.Add(systemMessage);
 
             Game.Dialog(Game.characterName + $" >>> {heroRequest}", "green");
             //Console.WriteLine($"User >>> {heroRequest}");
@@ -353,14 +353,17 @@ Hello, i am
 
             completionOptions.Messages.Add(assistantResponse);
 
-            //End of Program
-            Console.ReadKey();*/
+            var hikeRequest =
+             """
+            Kannst du mir empfehlungen für Sehenswürdigkeiten in der Nähe geben?
+            """;
 
 
             
 
         }
        
+            Console.WriteLine($"AI >>> {assistantResponse.Content}");
 
     }
 
