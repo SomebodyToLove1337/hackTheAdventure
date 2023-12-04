@@ -196,7 +196,7 @@ namespace hackTheAdventure
             Game.chooseLanguage();
             Console.Clear();
             connectAzureOpenAIAsync();
-            
+
 
             bool gameEnded = false;
 
@@ -226,7 +226,7 @@ namespace hackTheAdventure
 
             ChatCompletionsOptions completionOptions = new()
             {
-                MaxTokens = 2048,
+                MaxTokens = 20048,
                 Temperature = 0.7f,
                 NucleusSamplingFactor = 0.95f,
                 DeploymentName = "gpt-35-turbo"
@@ -300,6 +300,7 @@ Hello, i am
                     response = await openAIClient.GetChatCompletionsAsync(completionOptions);
 
                     assistantResponse = response.Choices[0].Message;
+                    Console.Clear();
 
                     if (assistantResponse.Content.Contains("You died. Game Over."))
                     {
@@ -321,6 +322,7 @@ Hello, i am
                         Game.Dialog("Dungeon Master >>>" + "\n" + $"{assistantResponse.Content}", "cyan");
                     }
                     counter++;
+                    
 
                 }
                 catch (Exception ex)
@@ -328,5 +330,7 @@ Hello, i am
                     Console.WriteLine(ex.Message);
                 }
             }
+
         }
+    }
 }

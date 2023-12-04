@@ -25,6 +25,12 @@ To run the program, you need to have the .NET Core SDK installed on your machine
 ```bash
 dotnet run
 ```
+Add the API key to the secrets.json file. You need an Azure OpenAI Key to run the program. You can get one [here](https://azure.microsoft.com/en-us/services/cognitive-services/openai-text-analytics/).
+Unfortunatly, the API key is not free, but you can get a free trial for 7 days.
+You have to use the Visual Studio secret manager to add the API key to the secrets.json file. You can find more information about the secret manager [here](https://docs.microsoft.com/en-us/aspnet/core/security/app-secrets?view=aspnetcore-5.0&tabs=windows).
+
+In the future, we will add a way to add the API key to the secrets.json file without using the Visual Studio secret manager.
+I will also have to get the appsettings.json file to work, so that the user can add the API key to the file without using the Visual Studio secret manager.
 
 ## Usage
 
