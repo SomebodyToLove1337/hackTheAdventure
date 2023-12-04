@@ -45,6 +45,7 @@ namespace hackTheAdventure
         {
             
             Console.WriteLine("Please enter the Name of your Hero:");
+            Console.ForegroundColor = ConsoleColor.Yellow;
             characterName = Console.ReadLine();
             Console.WriteLine("Hello " + characterName + "!");
             Console.WriteLine("Press any key to continue...");
@@ -56,10 +57,9 @@ namespace hackTheAdventure
         {
             Console.ForegroundColor = ConsoleColor.Cyan;
             Console.WriteLine(message);
-            Console.ReadKey();
             Console.ResetColor();
         }
-        public static void Dialog(string message, string color)
+        public static void Dialog(string message, string color, bool oneLine = false)
         {
             if (color == "red")
             {
@@ -97,52 +97,19 @@ namespace hackTheAdventure
             {
                 Console.ForegroundColor = ConsoleColor.White;
             }
-            Console.WriteLine(message);
-            //Console.ReadKey();
-            Console.ResetColor();
-        }
-        static void Choice()
-        {
-            char charInput;
-            Console.WriteLine("What would you like to do" + characterName + " ?");
-            Console.WriteLine("1. Go North");
-            Console.WriteLine("2. Go East");
-            Console.Write("> ");
-            charInput = Console.ReadKey().KeyChar;
-            while (charInput != '1' && charInput != '2')
+            if (oneLine == true)
             {
-                
-                Console.WriteLine("What would you like to do" + characterName + " ?");
-                Console.WriteLine("1. Go North");
-                Console.WriteLine("2. Go East");
-                Console.Write("> ");
-                
-                Console.WriteLine(" was an Invalid Choice please choose 1 or 2");
-                Console.Write("> ");
-                
-                charInput = Console.ReadKey().KeyChar;
-                Console.Clear();
-            }
-            if (charInput == '1')
-            {
-                Console.WriteLine("You go North");
-            }
-            else if (charInput == '2')
-            {
-                Console.WriteLine("You go East");
+                Console.Write(message);
             }
             else
             {
-                Console.WriteLine("Invalid Choice");
+                Console.WriteLine(message);
             }
+           
+            //Console.ReadKey();
+            Console.ResetColor();
         }
-        public static void AI(string userInput)
-        {
-            // Code for AI method goes here
-
-            
-        }
-
+       
     }
 
 
@@ -174,24 +141,6 @@ namespace hackTheAdventure
             Game.StartGame();
             Game.CreateCharacter();
             connectAzureOpenAIAsync();
-
-            bool gameEnded = false;
-            while (!gameEnded)
-            {
-                Console.WriteLine("What would you like to do, " + Game.characterName + "?");
-                string userInput = Console.ReadLine();
-
-                // Pass the userInput to the AI function or method
-              
-
-                // Pass the user input to the AI for a response
-                // and handle the response accordingly
-
-                // Check if the game has ended based on the AI response
-                // If the game has ended, set gameEnded to true
-            }
-
-            Console.ReadKey();
 
         }
 
@@ -290,8 +239,43 @@ Hello, i am
 
 
             //Console.WriteLine($"AI >>> {assistantResponse.Content}");
+            while (true)
+            {
+                Console.WriteLine("What do you want to do? (Type 'quit' to exit)");
+                ChatCompletions response = await openAIClient.GetChatCompletionsAsync(completionOptions);
+                
+                ChatMessage assistantResponse = response.Choices[0].Message;
 
-            ChatCompletions response = await openAIClient.GetChatCompletionsAsync(completionOptions);
+                Game.Dialog("Dungeon Master >>>" + "\n" + $"{assistantResponse.Content}", "cyan");
+                //Console.WriteLine($"Dungeon Master >>> {assistantResponse.Content}");
+
+                completionOptions.Messages.Add(assistantResponse);
+
+                Console.WriteLine("What do you want to do? (Type 'quit' to exit)");
+                Game.Dialog(Game.characterName + " >>> ", "green", true);
+                var heroRequest = Console.ReadLine();
+
+                //Game.Dialog(Game.characterName + "\n" + $" >>> {heroRequest}", "green");
+                //Console.WriteLine($"User >>> {heroRequest}");
+                if (heroRequest.Equals("quit", StringComparison.OrdinalIgnoreCase))
+                {
+                    break;
+                }
+
+                ChatMessage heroMessage = new(ChatRole.User, heroRequest);
+
+                completionOptions.Messages.Add(heroMessage);
+
+                response = await openAIClient.GetChatCompletionsAsync(completionOptions);
+
+                assistantResponse = response.Choices[0].Message;
+
+                //Game.Dialog("Dungeon Master >>>" + "\n" + $"{assistantResponse.Content}", "cyan");
+                //Console.WriteLine($"Dungeon Master >>> {assistantResponse.Content}");
+
+                Task.WaitAll();
+            }
+/*            ChatCompletions response = await openAIClient.GetChatCompletionsAsync(completionOptions);
 
             ChatMessage assistantResponse = response.Choices[0].Message;
             Game.Dialog($"Dungeon Master >>> {assistantResponse.Content}", "cyan");
@@ -301,7 +285,7 @@ Hello, i am
 
             var heroRequest = Console.ReadLine();
 
-            Game.Dialog(Game.characterName + $" >>> {heroRequest}", "green");
+            Game.Dialog(Game.characterName + "\n" + $" >>> {heroRequest}", "green");
             //Console.WriteLine($"User >>> {heroRequest}");
 
             ChatMessage heroMessage = new(ChatRole.User, heroRequest);
@@ -312,19 +296,38 @@ Hello, i am
 
             assistantResponse = response.Choices[0].Message;
 
-            Game.Dialog($"Dungeon Master >>> {assistantResponse.Content}", "cyan");
+            Game.Dialog("Dungeon Master >>>" + "\n" + $"{assistantResponse.Content}", "cyan");
             //Console.WriteLine($"Dungeon Master >>> {assistantResponse.Content}");
 
             Task.WaitAll();
 
             //End of Program
-            Console.ReadKey();
+            Console.ReadKey();*/
+
+/*            while (true)
+            {
+                Console.Write("Chat Prompt:");
+                string line = Console.ReadLine()!;
+                if (line.Equals("quit", StringComparison.OrdinalIgnoreCase))
+                {
+                    break;
+                }
+                options.Messages.Add(new ChatMessage(ChatRole.User, line));
+
+                Console.WriteLine("Response:");
+                Response<ChatCompletions> response =
+                await client.GetChatCompletionsAsync(
+                    deploymentOrModelName: deployment,
+                    options);
+
+                ChatCompletions completions = response.Value;
+                string fullresponse = completions.Choices[0].Message.Content;
+                Console.WriteLine(fullresponse);
+                options.Messages.Add(completions.Choices[0].Message);
+
+            }*/
 
 
-
-        }
-        private static void testAzureOpenAIConnection()
-        {
 
         }
     }
