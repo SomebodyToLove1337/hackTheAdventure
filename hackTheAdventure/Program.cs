@@ -15,35 +15,29 @@ using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
 using System.IO;
 
-
-
-
-
-//Console.WriteLine($"Hello, {config["endpoint"]}");
-
 namespace hackTheAdventure
 {
     public static class Game
     {
+        //Debugging Variables
+        public static bool statusDev = true;
         //Character Creation Variables
         public static string characterName = "Cassius";
 
         //Print out Game Tiltle and overview
         public static void StartGame()
         {
-            //Console.WriteLine("The Lost City of Zorath!\n");
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine("Welcome to The Enchanted Forest! You are about to embark on a magical journey through a mystical realm filled with wonder and danger. You will encounter many strange creatures and obstacles along the way, but with your wits and courage, you will overcome them all and emerge victorious.\r\n\r\nAs you explore the enchanted woods and winding rivers of this mysterious land, you will uncover ancient artifacts and long-forgotten secrets that will lead you ever closer to your goal. But beware: there are those who will stop at nothing to keep the secrets of the forest hidden from the world.\r\n\r\nAre you ready to take on the challenge? The fate of the realm rests in your hands. Good luck, adventurer!\r\n");
             Console.WriteLine("        ,     \\    /      ,        \r\n       / \\    )\\__/(     / \\       \r\n      /   \\  (_\\  /_)   /   \\      \r\n ____/_____\\__\\@  @/___/_____\\____ \r\n|             |\\../|              |\r\n|              \\VV/               |\r\n|     The Lost City of Zorath!    |\r\n|_________________________________|\r\n |    /\\ /      \\\\       \\ /\\    | \r\n |  /   V        ))       V   \\  | \r\n |/     `       //        '     \\| \r\n `              V                '");
             Console.ResetColor();
-            //CreateCharacter();
-            //Choice();
+
 
         }
 
         public static void CreateCharacter()
         {
-            
+
             Console.WriteLine("Please enter the Name of your Hero:");
             Console.ForegroundColor = ConsoleColor.Yellow;
             characterName = Console.ReadLine();
@@ -105,11 +99,11 @@ namespace hackTheAdventure
             {
                 Console.WriteLine(message);
             }
-           
-            //Console.ReadKey();
+
+            Console.ReadKey();
             Console.ResetColor();
         }
-       
+
     }
 
 
@@ -122,25 +116,11 @@ namespace hackTheAdventure
     {
         static void Main()
         {
-            /*            var json = File.ReadAllText("secrets.json");
-                        var secrets = JObject.Parse(json);
-                        var secretKey = secrets["endpoint"].ToString();
-                        Console.WriteLine(secretKey);
-                        Console.ReadKey();*/
-            //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-            /*            Game.StartGame();
-                        Game.CreateCharacter();
-                        connectAzureOpenAIAsync();
-
-
-                        //
-                        Console.ReadKey();*/
-            //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-            //Game.Dialog("Have you seen a strange creature around here?\nAbout three feet high, greenish, with fluffy hair?\n");
-            //Game.Dialog("No, I haven't seen anything like that.", "red");
-            Game.StartGame();
-            Game.CreateCharacter();
-            connectAzureOpenAIAsync();
+            //Game.StartGame();
+            //Game.CreateCharacter();
+            //connectAzureOpenAIAsync();
+            //testConnection();
+            NonStreamingChat();
 
         }
 
@@ -149,11 +129,6 @@ namespace hackTheAdventure
             var config = new ConfigurationBuilder()
     .AddUserSecrets<Program>()
     .Build();
-
-            // Retrieve App Secrets
-            /*            IConfiguration config = new ConfigurationBuilder()
-                            .AddUserSecrets<SomeClass>()
-                            .Build();*/
 
             string proxyUrl = config.GetSection("settings")["endpoint"];
 
@@ -169,48 +144,6 @@ namespace hackTheAdventure
             // instantiate the client with the "full" values for the url and key/token
             OpenAIClient openAIClient = new(proxyUri, token);
 
-            //Console.WriteLine($"Hello, {config["settings:endpoint"]}");
-            //Console.WriteLine(proxyUri + " " + key);
-
-            //Test connection
-            /*            ChatCompletionsOptions completionOptions = new()
-                        {
-                            MaxTokens = 2048,
-                            Temperature = 0.7f,
-                            NucleusSamplingFactor = 0.95f,
-                            DeploymentName = "gpt-3.5-turbo"
-                        };
-
-                       completionOptions.Messages.Add(new ChatMessage(ChatRole.System, "You are a Dungon Master for a text adventure game with the name 'The Enchanted Forest'. You will tell a story to the Hero. At the end of your text you will offer two options for the hero to go further."));
-                       completionOptions.Messages.Add(new ChatMessage(ChatRole.User, "hi there"));
-
-                        var systemPrompt =
-            """
-            You are a Dungon Master for a text adventure game with the name 'The Enchanted Forest'. 
-            You will tell a story to the Hero. At the end of your text you will offer two options for the hero to go further.
-            Please answer in JSON Format, with the two possible options to go further and when the game ends with the value "End: true"
-            """;
-                        ChatMessage systemMessage = new(ChatRole.System, systemPrompt);
-
-                        ChatCompletions response = await openAIClient.GetChatCompletionsAsync(completionOptions);
-
-                        completionOptions.Messages.Add(systemMessage);
-
-                        // the user prompt is the "question" for the AI
-                        string userGreeting = Console.ReadLine();
-
-                        ChatMessage userGreetingMessage = new(ChatRole.User, userGreeting);
-                        completionOptions.Messages.Add(userGreetingMessage);
-
-                        //string characterName = Game.characterName;
-                        Console.WriteLine(Game.characterName + $" >>> {userGreeting}");
-                        //ChatCompletions response = await openAIClient.GetChatCompletionsAsync(completionOptions);
-
-                        ChatMessage assistantResponse = response.Choices[0].Message;
-
-                        Console.WriteLine($"AI >>> {assistantResponse.Content}");
-
-                        Console.ReadKey();*/
             ChatCompletionsOptions completionOptions = new()
             {
                 MaxTokens = 2048,
@@ -235,102 +168,141 @@ Hello, i am
             ChatMessage userGreetingMessage = new(ChatRole.User, userGreeting);
             completionOptions.Messages.Add(userGreetingMessage);
 
-            //Console.WriteLine($"User >>> {userGreeting}");
+            Console.WriteLine($"User >>> {userGreeting}");
+
+
+
+            while (true)
+            {
+
+                try
+                {
+                    Console.WriteLine("What do you want to do? (Type 'quit' to exit)");
+                    //ChatCompletions response = await openAIClient.GetChatCompletionsAsync(completionOptions);
+                    ChatCompletions response = await openAIClient.GetChatCompletionsAsync(completionOptions);
+
+                    ChatMessage assistantResponse = response.Choices[0].Message;
+                    Console.WriteLine($"AI >>> {assistantResponse.Content}");
+
+                    Game.Dialog("Dungeon Master >>>" + "\n" + $"{assistantResponse.Content}", "cyan");
+                    //Console.WriteLine($"Dungeon Master >>> {assistantResponse.Content}");
+
+                    completionOptions.Messages.Add(assistantResponse);
+
+                    Console.WriteLine("What do you want to do? (Type 'quit' to exit)");
+                    Game.Dialog(Game.characterName + " >>> ", "green", true);
+                    var heroRequest = Console.ReadLine();
+
+                    //Game.Dialog(Game.characterName + "\n" + $" >>> {heroRequest}", "green");
+                    //Console.WriteLine($"User >>> {heroRequest}");
+                    if (heroRequest.Equals("quit", StringComparison.OrdinalIgnoreCase))
+                    {
+                        break;
+                    }
+
+                    ChatMessage heroMessage = new(ChatRole.User, heroRequest);
+
+                    completionOptions.Messages.Add(heroMessage);
+
+                    response = await openAIClient.GetChatCompletionsAsync(completionOptions);
+
+                    assistantResponse = response.Choices[0].Message;
+
+                    //Game.Dialog("Dungeon Master >>>" + "\n" + $"{assistantResponse.Content}", "cyan");
+                    //Console.WriteLine($"Dungeon Master >>> {assistantResponse.Content}");
+
+                    Task.WaitAll();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+
+            }
+        }
+        public static async Task testConnection()
+        {
+            if (Game.statusDev == true)
+            {
+                Console.WriteLine("Test Connection to Azure OpenAI API");
+            }
+            var config = new ConfigurationBuilder()
+                .AddUserSecrets<Program>()
+                .Build();
+
+            string proxyUrl = config.GetSection("settings")["endpoint"];
+
+            //string proxyUrl = config[\settings:endpoint\];
+            string key = config.GetSection("settings")["key"];
+
+            // the full url is appended by /v1/api
+            Uri proxyUri = new(proxyUrl + "/v1/api");
+
+            // the full key is appended by "/YOUR-GITHUB-ALIAS"
+            AzureKeyCredential token = new(key);
+
+            // instantiate the client with the "full" values for the url and key/token
+            OpenAIClient openAIClient = new(proxyUri, token);
+
+            ChatCompletionsOptions completionOptions = new()
+            {
+                MaxTokens = 2048,
+                Temperature = 0.7f,
+                NucleusSamplingFactor = 0.95f,
+                DeploymentName = "gpt-35-turbo"
+            };
+            // the system prompt is the "context" for the AI
+            var systemPrompt =
+            """
+            You are a hiking enthusiast who helps people discover fun hikes. You are upbeat and friendly. 
+            You ask people what type of hikes they like to take and then suggest some.
+            """;
+            ChatMessage systemMessage = new(ChatRole.System, systemPrompt);
+
+            completionOptions.Messages.Add(systemMessage);
+
+            // the user prompt is the "question" for the AI
+            string userGreeting = """
+            Hallo, ich habe fragen zu schönen Wanderwegen rund um Böbing. Können Sie mir helfen?
+            """;
+
+            ChatMessage userGreetingMessage = new(ChatRole.User, userGreeting);
+            completionOptions.Messages.Add(userGreetingMessage);
+
+            Console.WriteLine($"User >>> {userGreeting}");
 
 
             //Console.WriteLine($"AI >>> {assistantResponse.Content}");
-            while (true)
-            {
-                Console.WriteLine("What do you want to do? (Type 'quit' to exit)");
-                ChatCompletions response = await openAIClient.GetChatCompletionsAsync(completionOptions);
-                
-                ChatMessage assistantResponse = response.Choices[0].Message;
 
-                Game.Dialog("Dungeon Master >>>" + "\n" + $"{assistantResponse.Content}", "cyan");
-                //Console.WriteLine($"Dungeon Master >>> {assistantResponse.Content}");
-
-                completionOptions.Messages.Add(assistantResponse);
-
-                Console.WriteLine("What do you want to do? (Type 'quit' to exit)");
-                Game.Dialog(Game.characterName + " >>> ", "green", true);
-                var heroRequest = Console.ReadLine();
-
-                //Game.Dialog(Game.characterName + "\n" + $" >>> {heroRequest}", "green");
-                //Console.WriteLine($"User >>> {heroRequest}");
-                if (heroRequest.Equals("quit", StringComparison.OrdinalIgnoreCase))
-                {
-                    break;
-                }
-
-                ChatMessage heroMessage = new(ChatRole.User, heroRequest);
-
-                completionOptions.Messages.Add(heroMessage);
-
-                response = await openAIClient.GetChatCompletionsAsync(completionOptions);
-
-                assistantResponse = response.Choices[0].Message;
-
-                //Game.Dialog("Dungeon Master >>>" + "\n" + $"{assistantResponse.Content}", "cyan");
-                //Console.WriteLine($"Dungeon Master >>> {assistantResponse.Content}");
-
-                Task.WaitAll();
-            }
-/*            ChatCompletions response = await openAIClient.GetChatCompletionsAsync(completionOptions);
+            ChatCompletions response = await openAIClient.GetChatCompletionsAsync(completionOptions);
 
             ChatMessage assistantResponse = response.Choices[0].Message;
-            Game.Dialog($"Dungeon Master >>> {assistantResponse.Content}", "cyan");
-            //Console.WriteLine($"Dungeon Master >>> {assistantResponse.Content}");
+
+            Console.WriteLine($"AI >>> {assistantResponse.Content}");
 
             completionOptions.Messages.Add(assistantResponse);
 
-            var heroRequest = Console.ReadLine();
+            var hikeRequest =
+             """
+            Kannst du mir empfehlungen für Sehenswürdigkeiten in der Nähe geben?
+            """;
 
-            Game.Dialog(Game.characterName + "\n" + $" >>> {heroRequest}", "green");
-            //Console.WriteLine($"User >>> {heroRequest}");
+            Console.WriteLine($"User >>> {hikeRequest}");
 
-            ChatMessage heroMessage = new(ChatRole.User, heroRequest);
+            ChatMessage hikeMessage = new(ChatRole.User, hikeRequest);
 
-            completionOptions.Messages.Add(heroMessage);
+            completionOptions.Messages.Add(hikeMessage);
 
             response = await openAIClient.GetChatCompletionsAsync(completionOptions);
 
             assistantResponse = response.Choices[0].Message;
 
-            Game.Dialog("Dungeon Master >>>" + "\n" + $"{assistantResponse.Content}", "cyan");
-            //Console.WriteLine($"Dungeon Master >>> {assistantResponse.Content}");
-
-            Task.WaitAll();
+            Console.WriteLine($"AI >>> {assistantResponse.Content}");
 
             //End of Program
-            Console.ReadKey();*/
-
-/*            while (true)
-            {
-                Console.Write("Chat Prompt:");
-                string line = Console.ReadLine()!;
-                if (line.Equals("quit", StringComparison.OrdinalIgnoreCase))
-                {
-                    break;
-                }
-                options.Messages.Add(new ChatMessage(ChatRole.User, line));
-
-                Console.WriteLine("Response:");
-                Response<ChatCompletions> response =
-                await client.GetChatCompletionsAsync(
-                    deploymentOrModelName: deployment,
-                    options);
-
-                ChatCompletions completions = response.Value;
-                string fullresponse = completions.Choices[0].Message.Content;
-                Console.WriteLine(fullresponse);
-                options.Messages.Add(completions.Choices[0].Message);
-
-            }*/
-
-
-
+            Console.ReadKey();
         }
-    }
 
+    }
 
 }
