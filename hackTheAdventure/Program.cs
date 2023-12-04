@@ -273,14 +273,14 @@ Hello, i am
             {
                 try
                 {
-                    
+
                     ChatCompletions response = await openAIClient.GetChatCompletionsAsync(completionOptions);
 
                     ChatMessage assistantResponse = response.Choices[0].Message;
 
                     if (counter == 0)
-                    Game.Dialog("Dungeon Master >>>" + "\n" + $"{assistantResponse.Content}", "cyan");
-                    
+                        Game.Dialog("Dungeon Master >>>" + "\n" + $"{assistantResponse.Content}", "cyan");
+
                     completionOptions.Messages.Add(assistantResponse);
 
 
@@ -328,43 +328,5 @@ Hello, i am
                     Console.WriteLine(ex.Message);
                 }
             }
-            
-           /* ChatMessage userGreetingMessage = new(ChatRole.User, heroRequest);
-            completionOptions.Messages.Add(userGreetingMessage);
-
-            Console.WriteLine($"User >>> {heroRequest}");
-
-
-
-            //Console.WriteLine($"AI >>> {assistantResponse.Content}");
-
-            ChatCompletions response = await openAIClient.GetChatCompletionsAsync(completionOptions);
-
-            completionOptions.Messages.Add(systemMessage);
-
-            Game.Dialog(Game.characterName + $" >>> {heroRequest}", "green");
-            //Console.WriteLine($"User >>> {heroRequest}");
-
-
-            //Console.WriteLine($"AI >>> {assistantResponse.Content}");
-
-            Game.Dialog($"Dungeon Master >>> {assistantResponse.Content}", "cyan");
-            //Console.WriteLine($"Dungeon Master >>> {assistantResponse.Content}");
-
-            completionOptions.Messages.Add(assistantResponse);
-
-            var hikeRequest =
-             """
-            Kannst du mir empfehlungen für Sehenswürdigkeiten in der Nähe geben?
-            """;
-
-
-            
-
         }
-       
-            Console.WriteLine($"AI >>> {assistantResponse.Content}");
-
-    }
-
 }
