@@ -5,11 +5,13 @@ This is a program developed for the hackTheAdventure project. It is written in C
 ## Description
 
 The program.cs file contains the main entry point for the game. It initializes the game engine and starts the game loop. The game loop handles user input, updates the game state, and renders the game world.
+
+The AI creates a story based on the user input. The user can interact with the story by typing commands. The AI will then generate a response based on the user input. The AI will also generate a response based on the game state.
+
 If you like the Project, please give it a star. If some people are interested in the project, I will continue to work on it.
 
 ## Video
 https://github.com/SomebodyToLove1337/hackTheAdventure/assets/68236595/6b384f29-c6df-411b-80d1-d54d93c0d213
-
 
 ## Features
 
